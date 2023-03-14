@@ -1,1 +1,1 @@
-# microbial_analysis_I - assembly and pangenome analysis
+# microbial analysis I - assembly and pangenome analysis
