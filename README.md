@@ -1,1 +1,1 @@
-# microbial_analysis_II - snp phylogeny analysis
+# microbial_analysis_I - assembly and pangenome analysis
