@@ -392,7 +392,7 @@ postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}
     \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
     \makeatother
     \newcommand{\prompt}[4]{
-        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+        {\ttfamily\llap{{\color{blue}\LARGE\faKeyboardO\hspace{3pt}#4}}\vspace{-\baselineskip}}
     }
 
 
@@ -426,9 +426,9 @@ postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}
 
 
 
-    \hypertarget{pangenome-construction-using-roary}{%
-\section{Pangenome Construction using
-Roary}\label{pangenome-construction-using-roary}}
+    \hypertarget{pangenome-construction-with-roary}{%
+\section{Pangenome Construction with
+Roary}\label{pangenome-construction-with-roary}}
 
 \hypertarget{introduction}{%
 \subsection{Introduction}\label{introduction}}
@@ -438,7 +438,8 @@ the differences in gene content resulting from horizontal gene transfer,
 gene duplication and gene loss. Such differences can play a role in
 increased virulence or antimicrobial drug resistance. Aligning sequence
 data for an isolate to a single reference genome can fail to incorporate
-non-reference sequences XXX.
+non-reference sequences and fail to account for these types of
+differences.
 
 One approach to ovecome this limitation is to perform a pangenome
 analysis of your isolates. The pangenome is the set of all genes that
@@ -497,13 +498,13 @@ By the end of this tutorial you can expect to be able to:
 \subsection{Tutorial sections}\label{tutorial-sections}}
 
 This tutorial comprises the following sections:\\
-1. \href{pan_genome.ipynb}{What is a pan genome}\\
+1. \href{pan_genome.ipynb}{The pangenome explained}\\
 2. \href{prepare_data.ipynb}{Preparing the input data for Roary}\\
 3. \href{qc.ipynb}{Performing QC on your data}\\
 4. \href{run_roary.ipynb}{Constructing a pangenome with Roary}\\
 5. \href{results.ipynb}{Exploring the results}\\
-6. \href{phandango.ipynb}{Visualising the results with Phandango} 7.
-\href{assembly.ipynb}{Creating genome assemblies}
+6. \href{phandango.ipynb}{Visualising the results with Phandango}\\
+7. \href{assembly.ipynb}{Creating genome assemblies}
 
 \hypertarget{authors-and-license}{%
 \subsection{Authors and License}\label{authors-and-license}}
@@ -525,12 +526,12 @@ similar to the ``Command Prompt'' window on MS Windows systems, which
 allows the user to type DOS commands to manage files.
 
 To get started, open a terminal window and type the command below
-folowed by the \texttt{return} key:
+folowed by the \texttt{Enter} key:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n+nb}{cd}\PY{+w}{ }\PYZti{}/course\PYZus{}data/roary/data
+\PY{n+nb}{cd}\PY{+w}{ }\PYZti{}/course\PYZus{}data/pangenome/data
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -584,7 +585,7 @@ assembly\PYZhy{}stats
 use in this tutorial.
 
     To get started with the tutorial, go to the first section:
-\href{pan_genome.ipynb}{What is a pangenome?}
+\href{pan_genome.ipynb}{The pangenome explained}
 
 
     % Add a bibliography block to the postdoc
@@ -709,13 +710,13 @@ We must now annotate our genome assemblies to produce GFF3 files for
 \texttt{Roary}. The GFF3 files must include the nucleotide sequence at
 the end of the file, and to make it easier to identify which isolate
 each gene came from, each GFF3 file should have a unique locus tag
-(identifier) for the genes.\texttt{Prokka} is a tool that performs
+(identifier) for the genes. \texttt{Prokka} is a tool that performs
 genome annotation. All GFF3 files created by \texttt{Prokka} are valid
 with \texttt{Roary} and therefore this is the recommended way of
 generating the input files.
 
-    To run Prokka on a single file using the default settings, you would use
-something like:
+    To run \texttt{Prokka} on a single file using the default settings, you
+would use something like:
 
 \begin{verbatim}
 prokka sample1.fasta
@@ -728,9 +729,10 @@ on all the fasta files in the assemblies directory.
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{for}\PY{+w}{ }F\PY{+w}{ }\PY{k}{in}\PY{+w}{ }assemblies/*.fasta\PY{p}{;}\PY{+w}{ }\PY{k}{do}\PY{+w}{ }\PY{n+nv}{FILE}\PY{o}{=}\PY{l+s+si}{\PYZdl{}\PYZob{}}\PY{n+nv}{F}\PY{p}{\PYZsh{}\PYZsh{}*/}\PY{l+s+si}{\PYZcb{}}\PY{p}{;}\PY{+w}{ }\PY{n+nv}{PREFIX}\PY{o}{=}\PY{l+s+si}{\PYZdl{}\PYZob{}}\PY{n+nv}{FILE}\PY{p}{/.fasta/}\PY{l+s+si}{\PYZcb{}}\PY{p}{;}\PY{+w}{ }\PY{l+s+se}{\PYZbs{}}
-\PY{+w}{    }prokka\PY{+w}{ }\PYZhy{}\PYZhy{}locustag\PY{+w}{ }\PY{n+nv}{\PYZdl{}PREFIX}\PY{+w}{ }\PYZhy{}\PYZhy{}outdir\PY{+w}{ }annotated\PYZus{}\PY{n+nv}{\PYZdl{}PREFIX}\PY{+w}{ }\PY{l+s+se}{\PYZbs{}}
-\PY{+w}{    }\PYZhy{}\PYZhy{}prefix\PY{+w}{ }\PY{n+nv}{\PYZdl{}PREFIX}\PY{+w}{ }\PY{n+nv}{\PYZdl{}F}\PY{p}{;}\PY{+w}{ }\PY{k}{done}
+\PY{k}{for}\PY{+w}{ }F\PY{+w}{ }\PY{k}{in}\PY{+w}{ }assemblies/*.fasta\PY{p}{;}\PY{+w}{ }\PY{k}{do}\PY{+w}{ }
+\PY{+w}{    }\PY{n+nv}{FILE}\PY{o}{=}\PY{l+s+si}{\PYZdl{}\PYZob{}}\PY{n+nv}{F}\PY{p}{\PYZsh{}\PYZsh{}*/}\PY{l+s+si}{\PYZcb{}}\PY{p}{;}\PY{+w}{ }\PY{n+nv}{PREFIX}\PY{o}{=}\PY{l+s+si}{\PYZdl{}\PYZob{}}\PY{n+nv}{FILE}\PY{p}{/.fasta/}\PY{l+s+si}{\PYZcb{}}\PY{p}{;}
+\PY{+w}{    }prokka\PY{+w}{ }\PYZhy{}\PYZhy{}locustag\PY{+w}{ }\PY{n+nv}{\PYZdl{}PREFIX}\PY{+w}{ }\PYZhy{}\PYZhy{}outdir\PY{+w}{ }annotated\PYZus{}\PY{n+nv}{\PYZdl{}PREFIX}\PY{+w}{ }\PYZhy{}\PYZhy{}prefix\PY{+w}{ }\PY{n+nv}{\PYZdl{}PREFIX}\PY{+w}{ }\PY{n+nv}{\PYZdl{}F}\PY{p}{;}\PY{+w}{ }
+\PY{k}{done}
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -746,16 +748,16 @@ Prokka:
 Option & Description \\
 \midrule
 \endhead
---locustag & The locus tag prefix \\
---outdir & The directory to put the output \\
---prefix & The prefix for the output files \\
+\texttt{-\/-locustag} & The locus tag prefix \\
+\texttt{-\/-outdir} & The directory to put the output \\
+\texttt{-\/-prefix} & The prefix for the output files \\
 \bottomrule
 \end{longtable}
 
-By providing a unique value for the \textbf{--locustag} option we make
+By providing a unique value for the \texttt{-\/-locustag} option we make
 it easier to identify which sample different genes came from when we
-look at the results from Roary. The \textbf{--outdir} and
-\textbf{--prefix} options will make it easier for us to keep track of
+look at the results from Roary. The \texttt{-\/-outdir} and
+\texttt{-\/-prefix} options will make it easier for us to keep track of
 our files.
 
 This is going to take around 5 minutes or longer to run, so be patient.
@@ -763,8 +765,8 @@ Perhaps read the next section \href{qc.ipynb}{Performing QC on your
 data} come back here when Prokka is finished running.
 
 Once this has finished, you should have three new directories called
-annotated\_sample1, annotated\_sample2 and annotated\_sample3. Have a
-look to see that it worked:
+\texttt{annotated\_sample1}, \texttt{annotated\_sample2} and
+\texttt{annotated\_sample3}. Have a look to see that it worked:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
@@ -841,8 +843,8 @@ expect them to be. You can use tools such as \texttt{Bactinspector} or
 \texttt{Roary} has a qc option that will run \texttt{Kraken} for you and
 generate a report listing the top species of all the samples.
 
-We will not run this here but an eample report may look something like
-this:
+We will not run \texttt{Kraken} now but an example report may look
+something like this:
 
     \begin{figure}
 \centering
@@ -851,7 +853,7 @@ this:
 \end{figure}
 
     As we expected, these three samples are all of the same species. Let's
-assume that we had an additional forth sample and we run \texttt{Roary}
+assume that we had an additional fourth sample and we run \texttt{Roary}
 with the qc option, we get the following output:
 
     \begin{figure}
@@ -966,7 +968,7 @@ settings}\label{run-roary-with-default-settings}}
 
 To run \texttt{Roary} with the default settings all you need to do is
 run \texttt{roary\ *.gff} and it will create a pangenome using all GFF
-files in the current directory.Try the following command:
+files in the current directory. Try the following command:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
@@ -976,9 +978,9 @@ roary\PY{+w}{ }\PYZhy{}f\PY{+w}{ }output\PYZus{}no\PYZus{}alignment\PY{+w}{ }*.g
 \end{tcolorbox}
 
     We want to run Roary twice with different settings, so in order to keep
-track of our output files from each run The \textbf{-f} option is used
-to specify the name of the ouptut directory where \texttt{Roary} should
-put the results. This will run for a few minutes.
+track of our output files from each run we will use the \textbf{-f}
+option to specify the name of the ouptut directory where \texttt{Roary}
+should put the results. This will run for a few minutes.
 
 We will have a closer look at the results in the next section, so for
 now let us just see that there are some output files in the directroy we
@@ -1012,19 +1014,20 @@ options.
 Option & Description \\
 \midrule
 \endhead
--e & Create a multi-FASTA alignment of the core genes \\
---mafft & Use with -e to use MAFFT instead of PRANK \\
--p & Number of threads to use \\
+\texttt{-e} & Create a multi-FASTA alignment of the core genes \\
+\texttt{-\/-mafft} & Use with -e to use MAFFT instead of PRANK \\
+\texttt{-p} & Number of threads to use \\
 \bottomrule
 \end{longtable}
 
-By default, `Roary' will use \texttt{PRANK} when the \textbf{-e} option
-is speified. It is accurate but slow. \texttt{MAFFT} is less accurate
-but very fast so we are going to use this instead by specifying the
-\textbf{--mafft} option. To further speed things up, we are going to use
-2 threads (the \textbf{-p} option). For all usage options, you can have
-a look at the \href{https://sanger-pathogens.github.io/Roary/}{Roary
-website (https://sanger-pathogens.github.io/Roary/)}.
+By default, \texttt{Roary} will use \texttt{PRANK} when the \texttt{-e}
+option is speified. It is accurate but slow. \texttt{MAFFT} is less
+accurate but very fast so we are going to use this instead by specifying
+the \texttt{-\/-mafft} option. To further speed things up, we are going
+to use 2 threads (the \texttt{-p} option). For all usage options, you
+can have a look at the
+\href{https://sanger-pathogens.github.io/Roary/}{Roary website
+(https://sanger-pathogens.github.io/Roary/)}.
 
     This will take a bit longer to run than the previous command, maybe 5 or
 10 minutes, perhaps answer the questions at the end of this section
@@ -1271,8 +1274,7 @@ example:
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-query\PYZus{}pan\PYZus{}genome\PY{+w}{ }\PYZhy{}a\PY{+w}{ }union\PY{+w}{ }\PY{l+s+se}{\PYZbs{}}
-\PY{+w}{    }\PYZhy{}g\PY{+w}{ }output\PYZus{}with\PYZus{}alignment/clustered\PYZus{}proteins\PY{+w}{ }*.gff
+query\PYZus{}pan\PYZus{}genome\PY{+w}{ }\PYZhy{}a\PY{+w}{ }union\PY{+w}{ }\PYZhy{}g\PY{+w}{ }output\PYZus{}with\PYZus{}alignment/clustered\PYZus{}proteins\PY{+w}{ }*.gff
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -1314,13 +1316,14 @@ genes you are particularly interested in.
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-query\PYZus{}pan\PYZus{}genome\PY{+w}{ }\PYZhy{}a\PY{+w}{ }gene\PYZus{}multifasta\PY{+w}{ }\PY{l+s+se}{\PYZbs{}}
-\PY{+w}{    }\PYZhy{}g\PY{+w}{ }output\PYZus{}with\PYZus{}alignment/clustered\PYZus{}proteins\PY{+w}{ }\PY{l+s+se}{\PYZbs{}}
-\PY{+w}{    }\PYZhy{}n\PY{+w}{ }patB,mnmG,hsdM\PY{+w}{ }*.gff
+query\PYZus{}pan\PYZus{}genome\PY{+w}{ }\PYZhy{}a\PY{+w}{ }gene\PYZus{}multifasta\PY{+w}{ }\PYZhy{}g\PY{+w}{ }output\PYZus{}with\PYZus{}alignment/clustered\PYZus{}proteins\PY{+w}{ }\PYZhy{}n\PY{+w}{ }patB,mnmG,hsdM\PY{+w}{ }*.gff
 \end{Verbatim}
 \end{tcolorbox}
 
-    The \textbf{-a} option species the action (create a multi-FASTA file of
+    Note this command is shown here split over multiple lines. It should be
+typed as one command in one line in the terminal window.
+
+The \textbf{-a} option species the action (create a multi-FASTA file of
 protein sequences) and the \textbf{-n} option specifies a comma
 separated list of the cluster names (patB,mnmG,hsdM).
 
@@ -1377,8 +1380,7 @@ from a nucleotide alignment using a generalized time-reversible model
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-fasttree\PY{+w}{ }\PYZhy{}nt\PY{+w}{ }\PYZhy{}gtr\PY{+w}{ }output\PYZus{}with\PYZus{}alignment/core\PYZus{}gene\PYZus{}alignment.aln\PY{+w}{ }\PY{l+s+se}{\PYZbs{}}
-\PY{+w}{    }\PYZgt{}\PY{+w}{ }tree.newick
+fasttree\PY{+w}{ }\PYZhy{}nt\PY{+w}{ }\PYZhy{}gtr\PY{+w}{ }output\PYZus{}with\PYZus{}alignment/core\PYZus{}gene\PYZus{}alignment.aln\PY{+w}{ }\PYZgt{}\PY{+w}{ }tree.newick
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -1388,7 +1390,8 @@ fasttree\PY{+w}{ }\PYZhy{}nt\PY{+w}{ }\PYZhy{}gtr\PY{+w}{ }output\PYZus{}with\PY
 (sample1:0.006228253,sample2:0.002364375,sample3:0.002920483);
 \end{verbatim}
 
-We can view this in iTOl or FigTree, which will look something like:
+We can view this in \texttt{iTOl} or \texttt{FigTree}, which will look
+something like:
 
 
 \begin{center}
@@ -1491,8 +1494,10 @@ the current view in svg format, simply press \textit{p}.
 \hypertarget{check-your-understanding}{%
 \subsection{Check your understanding}\label{check-your-understanding}}
 
-\textbf{In Phandango, zoom in on the gene cluster at position 25080.}\\
-\textbf{Q14: What is the name of this gene cluster?}\\
+\textbf{In Phandango, zoom in on the gene cluster at position 25080.}
+
+\textbf{Q14: What is the name of this gene cluster?}
+
 \textbf{Q15: Is this a core gene?}
 
 This tutorial has shown you how to construct a pangenome for a set of
@@ -1569,11 +1574,13 @@ default parameters use:
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-spades.py\PY{+w}{ }\PYZhy{}\PYZhy{}pe1\PYZhy{}1\PY{+w}{ }fastq/ERR657310\PYZus{}1.fastq.gz\PY{+w}{ }\PYZhy{}\PYZhy{}pe1\PYZhy{}2\PY{+w}{ }fastq/ERR657310\PYZus{}2.fastq.gz\PY{+w}{ }\PYZhy{}\PYZhy{}only\PYZhy{}assembler\PY{+w}{ }\PYZhy{}\PYZhy{}careful\PY{+w}{ }\PYZhy{}o\PY{+w}{ }ERR657310\PY{+w}{ }\PYZhy{}k\PY{+w}{ }\PY{l+m}{33},43,53,63\PY{+w}{ }\PYZhy{}\PYZhy{}threads\PY{+w}{ }\PY{l+m}{1}
+spades.py\PY{+w}{ }\PYZhy{}\PYZhy{}pe1\PYZhy{}1\PY{+w}{ }fastq/ERR657310\PYZus{}1.fastq.gz\PY{+w}{ }\PYZhy{}\PYZhy{}pe1\PYZhy{}2\PY{+w}{ }fastq/ERR657310\PYZus{}2.fastq.gz\PY{+w}{ }\PYZhy{}\PYZhy{}only\PYZhy{}assembler\PY{+w}{ }\PYZhy{}\PYZhy{}careful\PY{+w}{ }\PYZhy{}o\PY{+w}{ }ERR657310\PY{+w}{ }\PYZhy{}k\PY{+w}{ }\PY{l+m}{33},43,53,63\PY{+w}{ }\PYZhy{}\PYZhy{}threads\PY{+w}{ }\PY{l+m}{2}
 \end{Verbatim}
 \end{tcolorbox}
 
-    This may take some time to run so please be patient.
+    Note this command is split over multiple lines but should be typed as
+one command in one line in the terminal window. This may take some time
+to run so please be patient.
 
 \texttt{SPAdes} (St.~Petersburg genome assembler) is a genome assembly
 algorithm which was designed for single cell and multi-cell bacterial
@@ -1610,7 +1617,7 @@ assemble the best reference possible.
     \hypertarget{assembly-metrics}{%
 \subsection{Assembly metrics}\label{assembly-metrics}}
 
-To generate metrics to assess the quality of the assembly you can use
+To generate metrics to assess the quality of the assembly you can use a
 program called \texttt{assembly-stats}. It displays the number of
 contigs, the mean contig size and a lot of other useful metrics about
 the assembly. These numbers can be used to assess the quality of your
@@ -1642,7 +1649,7 @@ questions below
     Another good software tool to assess the quality of your assemblies is
 \href{http://bioinf.spbau.ru/quast}{\texttt{Quast}
 (http://bioinf.spbau.ru/quast)}. However, we do not have time here to
-cover the use of Quast for assembly QC.
+cover the use of Quast here.
 
     \hypertarget{genome-assembly-pipelines}{%
 \subsection{Genome assembly pipelines}\label{genome-assembly-pipelines}}
