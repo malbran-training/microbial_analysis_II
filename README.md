@@ -1,1 +1,1 @@
-# microbial analysis II - pangenome analysis
+# Microbial Analysis II - Pangenome Analysis
